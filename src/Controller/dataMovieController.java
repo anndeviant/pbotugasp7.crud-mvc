@@ -31,10 +31,20 @@ public class dataMovieController {
     private boolean deleteError = false;
 
     private boolean isFormValid() {
-        return !frame.getJTextJudul().getText().isEmpty()
-                && !frame.getJTextAlur().getText().isEmpty()
-                && !frame.getJTextPenokohan().getText().isEmpty()
-                && !frame.getJTextAkting().getText().isEmpty();
+        if (frame.getJTextJudul().getText().isEmpty()
+                || frame.getJTextAlur().getText().isEmpty()
+                || frame.getJTextPenokohan().getText().isEmpty()
+                || frame.getJTextAkting().getText().isEmpty()) {
+            return false;
+        }
+        try {
+            double alur = Double.parseDouble(frame.getJTextAlur().getText());
+            double penokohan = Double.parseDouble(frame.getJTextPenokohan().getText());
+            double akting = Double.parseDouble(frame.getJTextAkting().getText());
+            return alur >= 0 && alur <= 5 && penokohan >= 0 && penokohan <= 5 && akting >= 0 && akting <= 5;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
     public dataMovieController(mainView frame) {
@@ -65,14 +75,13 @@ public class dataMovieController {
                 implDataMovie.insert(movie);
                 insertError = false;
             } catch (NumberFormatException ex) {
-                // Tampilkan pesan bahwa ada input kosong
                 JOptionPane.showMessageDialog(null, "Terdapat input yang tidak valid!", "Warning", JOptionPane.WARNING_MESSAGE);
                 ex.printStackTrace();
                 insertError = true;
             }
         } else {
-            // Tampilkan pesan peringatan bahwa data belum diisi
-            JOptionPane.showMessageDialog(null, "Mohon data diisi terlebih dahulu!", "Warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Mohon data diisi dengan benar! Nilai angka (0 - 5).", "Warning",
+                    JOptionPane.WARNING_MESSAGE);
             insertError = true;
         }
     }
@@ -92,37 +101,38 @@ public class dataMovieController {
                 movie.setNilai(tmpRateResult);
                 implDataMovie.update(movie);
                 updateError = false;
-                JOptionPane.showMessageDialog(null, "Data berhasil diubah!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Data berhasil diubah!", "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
             } catch (NumberFormatException ex) {
-                // Tampilkan pesan bahwa ada input kosong
-                JOptionPane.showMessageDialog(null, "Terdapat input yang tidak valid!", "Warning", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Terdapat input yang tidak valid!", "Warning",
+                        JOptionPane.WARNING_MESSAGE);
                 ex.printStackTrace();
                 updateError = true;
             }
         } else {
-            // Tampilkan pesan peringatan bahwa data belum diisi
-            JOptionPane.showMessageDialog(null, "Mohon data diisi terlebih dahulu!", "Warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Mohon data diisi dengan benar! Nilai angka (0 - 5).", "Warning",
+                    JOptionPane.WARNING_MESSAGE);
             updateError = true;
         }
     }
 
     public void delete() {
-        if (isFormValid()) {
+        if (!frame.getJTextJudul().getText().isEmpty()) {
             try {
-                dataMovie movie = new dataMovie();
                 deleteValue = frame.getJTextJudul().getText();
                 implDataMovie.delete(deleteValue);
                 deleteError = false;
-                JOptionPane.showMessageDialog(null, "Data berhasil dihapus!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Data berhasil dihapus!", "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
             } catch (NumberFormatException ex) {
-                // Tampilkan pesan bahwa ada input kosong
-                JOptionPane.showMessageDialog(null, "Terdapat input yang tidak valid!", "Warning", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Terdapat input yang tidak valid!", "Warning",
+                        JOptionPane.WARNING_MESSAGE);
                 ex.printStackTrace();
                 deleteError = true;
             }
         } else {
-            // Tampilkan pesan peringatan bahwa data belum diisi
-            JOptionPane.showMessageDialog(null, "Mohon data diisi terlebih dahulu!", "Warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Mohon isi judul film yang akan dihapus!", "Warning",
+                    JOptionPane.WARNING_MESSAGE);
             deleteError = true;
         }
     }
